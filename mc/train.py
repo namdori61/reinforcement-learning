@@ -1,6 +1,7 @@
 from typing import Tuple
 import random
 import argparse
+from tqdm import tqdm
 
 
 parser = argparse.ArgumentParser(description='GraidWorld MC')
@@ -92,7 +93,7 @@ def main():
     gamma = 1.0
     alpha = 0.0001
 
-    for i, k in enumerate(range(args.num_episode)):
+    for k in tqdm(range(args.num_episode), desc='sampling episodes'):
         done = False
         history = []
         while not done:
@@ -107,9 +108,6 @@ def main():
             x, y, reward = transition
             data[x][y] = data[x][y] + alpha * (cum_reward - data[x][y])
             cum_reward += gamma * reward
-
-        if i % 1000 == 0:
-            print(f'{i}th episode sampling')
 
     for row in data:
         print(row)
