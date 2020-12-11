@@ -20,3 +20,8 @@ reinforcement learning tutorial
 - TD prediction : `python grid_world/td_prediction.py --num_episode [int]`
 - TD control (SARSA) : `python grid_world/sarsa.py --num_episode [int]`
 - TD control (Q-Learing) : `python grid_world/q_learning.py --num_episode [int]`
+
+## Model Free & Large world (Cart Pole)
+
+### DQN (Deep Q Network)
+- DQN control : `python cart_pole_DQN/train.py --num_episode [int] --lr [int] --gamma [float] --buffer_limit [int] --batch_size [int]`
