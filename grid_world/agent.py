@@ -59,9 +59,20 @@ class QAgent:
         self.q_table[x, y, a] = self.q_table[x, y, a]\
                                 + self.alpha * (r + self.q_table[next_x, next_y, a_prime] - self.q_table[x, y, a])
 
+    def q_learning_update_table(self,
+                                transition: Tuple[Union[int, Tuple[int]]] = None) -> None:
+        # update q table value by transition
+        s, a, r, s_prime = transition
+        x, y = s
+        next_x, next_y = s_prime
+        # Q-Learning update
+        self.q_table[x, y, a] = self.q_table[x, y, a]\
+                                + self.alpha * (r + np.argmax(self.q_table[next_x, next_y, :]) - self.q_table[x, y, a])
 
-    def anneal_eps(self) -> None:
-        self.eps -= 0.03
+
+    def anneal_eps(self,
+                   step: float = 0.03) -> None:
+        self.eps -= step
         self.eps = max(self.eps, 0.1)
 
     def show_table(self):
