@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import Tuple, List, Union
 import random
 import numpy as np
 
@@ -20,10 +20,11 @@ class Agent:
         return action
 
 class QAgent:
-    def __init__(self) -> None:
+    def __init__(self,
+                 alpha: float = 0.01) -> None:
         self.q_table = np.zeros((5, 7, 4)) # q values
         self.eps = 0.9
-        self.alpha = 0.01
+        self.alpha = alpha
 
     def select_action(self, s: Tuple = None) -> int:
         #action by eps-greedy
@@ -36,8 +37,8 @@ class QAgent:
             action = np.argmax(action_val)
         return action
 
-    def update_table(self,
-                     history: List[Tuple] = None) -> None:
+    def mc_update_table(self,
+                        history: List[Tuple] = None) -> None:
         #update q table value by episode(history)
         cum_reward = 0
         for transition in history[::-1]:
@@ -46,6 +47,18 @@ class QAgent:
             #update by MC
             self.q_table[x, y, a] = self.q_table[x, y, a] + self.alpha * (cum_reward - self.q_table[x, y, a])
             cum_reward = cum_reward + r
+
+    def sarsa_update_table(self,
+                           transition: Tuple[Union[int, Tuple[int]]] = None) -> None:
+        # update q table value by transition
+        s, a, r, s_prime = transition
+        x, y = s
+        next_x, next_y = s_prime
+        a_prime = self.select_action(s_prime) # select action in state s'
+        # SARSA update
+        self.q_table[x, y, a] = self.q_table[x, y, a]\
+                                + self.alpha * (r + self.q_table[next_x, next_y, a_prime] - self.q_table[x, y, a])
+
 
     def anneal_eps(self) -> None:
         self.eps -= 0.03
